@@ -1,25 +1,41 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+function Hello({name, color}){
+  console.log(name, color);
+  return (
+  <h1 
+    style = {{color}}
+    className = "head"
+  >{name}</h1>)
+}
+Hello.defaultProps = {
+  name : "nothing"
+}
+
+function Wrap({children}){
+  const style = {
+    border: "2px solid black",
+    padding: 12,
+    lineHeight: "1em",
+    textTransform : "uppercase"
+  }
+  return <div style={style}>{children}</div>
+}
 
 function App() {
+  // const props = [
+  //   {name : "Hello", color : "tan"},
+  //   {name : "world", color : "lightcoral"},
+  // ]
+  // const elem = props.map((a)=>{
+  //   <Hello name={a.name} color={a.color}/> 
+  // })
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Wrap>
+      {/* {elem} */}
+      <Hello name={"Hello"} color={"tan"}/>
+      <Hello name={"World"} color={"lightcoral"}/>
+    </Wrap>
   );
 }
 
