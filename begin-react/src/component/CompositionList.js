@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react';
+import React, {useReducer, useCallback, useMemo} from 'react';
 
 
 // presentation 
@@ -13,34 +13,17 @@ function List({param ,  removeAction}){
 	);
 }
 
-function CreateList({user, email}){
+function CreateList({user, email, onChange}){
 	return(
 		<div>
-			<input type="text" name="user" value={user}/>
-			<input type="text" name="email" value={email}/>
+			<input type="text" name="user" value={user} onChange={onChange} />
+			<input type="text" name="email" value={email}onChange={onChange} />
 			<button type="button">Account Regist</button>
 		</div>
 	);
 }
 
-function reducer(state, action){
-	console.log(state);
-	switch(action.type){
-		case 'REMOVE' :
-			console.log(
-				action.id
-			);
-			return({
-				...state,
-				accounts : state.accounts.filter( account => account.id !== action.id)
-			});
-
-		default :
-			// return false;
-			return new Error('unhandled errors');
-	}
-}
-
+// state
 const initialState = {
 	formValue : {
 		user : '',
@@ -70,24 +53,66 @@ const initialState = {
 	]
 }
 
+function reducer(state, action){
+	switch(action.type){
+		case "CHNAGE_ACCOUNT" :
+			return({
+				...state, 
+				formValue : {
+					...state.formValue,
+					[action.name] : action.value
+				}
+			});
+		case "CREATE_ACCOUNT" :
+			return([
+				
+			]);
+		default :
+			return state;
+			
+	}
+}
+
 // container
 function CompositionList(){
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const {formValue, accounts} = state;
 	const {user, email} = formValue;
-	console.log(accounts);
-	const onRemove = ()=>{
+
+	const onChange = useCallback((event) => {
+		const {name, value} = event.target;
 		dispatch({
-			type : 'REMOVE'
+			type : "CHNAGE_ACCOUNT",
+			name, 
+			value,
+		}, [name, value])
+	})
+	const onCreate = useCallback(()=>{
+		const [arr1, arr2, ...rest] = state.accounts
+		dispatch({
+			type : "CREATE_ACCOUNT",
+			account : {
+				id : 1,
+				username,
+				email,
+			},
+			arr1, arr2, rest
+		})
+	},[username, email, arr1, arr2, rest])
+	const onRemove = useCallback( id=>{
+		dispatch({
+			type : 'REMOVE_ACCOUNT'
 		});
-	};
+	}, []);
+
 	const ListElem = accounts.map(
 		account =>
 		<List key={account.id} param={account} removeAction={onRemove}/>
 	);
+
 	return(
 		<>
-			<CreateList user={user} email={email}/>
+			<CreateList user={user} email={email} onChange={onChange}/>
 			{ListElem}
 		</>
 	);
