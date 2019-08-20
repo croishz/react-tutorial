@@ -1,4 +1,5 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useMemo} from 'react';
+import CompositionList from './component/CompositionList';
 
 function Hello({name, color, opt}){
 	console.log(name, color);
@@ -153,6 +154,10 @@ function CreateList({onchange, oncreate, onreset, user, email, firstFocus}){
 		</div>
 	);
 }
+function ConutListLength(users){
+	console.log("count check");
+	return users.filter( user => user.active).length;
+}
 function ListBlock(){
 	const [userInfo, setUserInfo] = useState([
 		{
@@ -232,6 +237,7 @@ function ListBlock(){
 			param
 		))
 	}
+	const activeCount = useMemo(()=>ConutListLength(userInfo), [userInfo]);
 	return(
 		<>
 			<CreateList user={user} email={email} onchange={onchange} oncreate={oncreate} onreset={onreset} firstFocus={accountInput}/>
@@ -240,6 +246,7 @@ function ListBlock(){
 					return <List key={info.id} parm={info} onremove={onremove} ontoggle={ontoggle} />;
 				}
 			)}
+			<div>{activeCount}</div>
 		</>
 		// <>
 		// 	<List parm={information[0]}/>
@@ -258,23 +265,29 @@ function App() {
 	// const elem = props.map((a)=>{
 	// 	<Hello name={a.name} color={a.color}/> 
 	// })
-	return (
-	<Wrap>
-		{	// children parameter
-		<>	{/* braket으로 children parameter를 감싸면 fragment가 필요 */}
-			<ListBlock />
-			<MultiInput />
-			<TextInput />
-			<Counter />
-			{/* {elem} */}
-			<Hello name={"Hello"} color={"tan"} 
-				// opt={trre} 
-				opt // property 선언만 하면 true값을 전달.
-			/> 
-			<Hello name={"World"} color={"lightcoral"} opt={false}/>
-		</>
-		}
-	</Wrap>
+	const hookpackage = true;
+		return (
+		<Wrap>
+			{	// children parameter
+			// ~ chapter 15
+			hookpackage === false ? 
+				<>	{/* braket으로 children parameter를 감싸면 fragment가 필요 */}
+					<ListBlock />
+					<MultiInput />
+					<TextInput />
+					<Counter />
+					{/* {elem} */}
+					<Hello name={"Hello"} color={"tan"} 
+						// opt={trre} 
+						opt // property 선언만 하면 true값을 전달.
+					/> 
+					<Hello name={"World"} color={"lightcoral"} opt={false}/>
+				</>
+			:
+			// chapter 16 ~ 22 : use hooks
+			<CompositionList />
+			}
+		</Wrap>
 	);
 }
 
