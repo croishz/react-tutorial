@@ -3,24 +3,24 @@ import React, {useReducer, useCallback, useMemo, useRef} from 'react';
 
 // presentation 
 function List({param ,  removeAction, toggleAction}){
-	const {username : user, email, active} = param;
+	const {username : user, email, active, id} = param;
 	const style = {
 		color: active && "tan",
 	}
 	return(
 		<div className="item">
-			<span style={style} onClick={toggleAction}>{user}</span>
+			<div style={style} onClick={()=>toggleAction(id)}>{user}</div>
 			<span>{email}</span>
-			<button type="button" onClick={removeAction}>Remove</button>
+			<button type="button" onClick={()=>removeAction(id)}>Remove</button>
 		</div>
 	);
 }
 
-function CreateList({user, email, onChange, createAction}){
+function CreateList({user, email, changeAction, createAction}){
 	return(
 		<div>
-			<input type="text" name="user" value={user} onChange={onChange} />
-			<input type="text" name="email" value={email} onChange={onChange} />
+			<input type="text" name="user" value={user} onChange={changeAction} />
+			<input type="text" name="email" value={email} onChange={changeAction} />
 			<button type="button" onClick={createAction}>Account Regist</button>
 		</div>
 	);
@@ -60,7 +60,7 @@ const initialState = {
 	]
 }
 
-function a(state, action){
+function reducer(state, action){
 	console.log(action);	// useReducer의 첫번째 인자는 dispatch()가 보낸 parameter를 두번째 인자로 받음.
 	switch(action.type){
 		case "CHNAGE_ACCOUNT" :
@@ -88,7 +88,9 @@ function a(state, action){
 			return({
 				...state,
 				accounts : state.accounts.map(account =>
-					account.id === action.id ? {account, active : !account.active} : account
+					account.id === action.id 
+					? {...account, active : !account.active} 
+					: account
 				)
 			});
 
@@ -99,7 +101,7 @@ function a(state, action){
 
 // container
 function CompositionList(){
-	const [state, dispatch] = useReducer(a, initialState);
+	const [state, dispatch] = useReducer(reducer, initialState);
 	const {formValue, accounts} = state;
 	const {user, email} = formValue;
 	const nextId = useRef(accounts.length + 1);
@@ -120,24 +122,25 @@ function CompositionList(){
 				id : nextId.current,
 				username : user,
 				email,
+				active : true
 			}
 		});
 		nextId.current += 1; 
 	},[user, email]);
 
-	const onRemove = useCallback( id=>{
+	const onRemove = useCallback( id => {
 		dispatch({
 			type : 'REMOVE_ACCOUNT',
 			id
 		});
-	}, []);
+	});
 
-	const onToggle = useCallback( id=>{
+	const onToggle = useCallback( id => {
 		dispatch({
 			type : 'TOGGLE_ACCOUNT',
 			id
 		});
-	}, []);
+	});
 
 	const count = useMemo(()=>{
 		return(
