@@ -1,24 +1,27 @@
-import React, {useReducer, useCallback, useMemo} from 'react';
+import React, {useReducer, useCallback, useMemo, useRef} from 'react';
 
 
 // presentation 
-function List({param ,  removeAction}){
-	const {username : user, email} = param;
+function List({param ,  removeAction, toggleAction}){
+	const {username : user, email, active} = param;
+	const style = {
+		color: active && "tan",
+	}
 	return(
 		<div className="item">
-			<span>{user}</span>
+			<span style={style} onClick={toggleAction}>{user}</span>
 			<span>{email}</span>
 			<button type="button" onClick={removeAction}>Remove</button>
 		</div>
 	);
 }
 
-function CreateList({user, email, onChange}){
+function CreateList({user, email, onChange, createAction}){
 	return(
 		<div>
 			<input type="text" name="user" value={user} onChange={onChange} />
-			<input type="text" name="email" value={email}onChange={onChange} />
-			<button type="button">Account Regist</button>
+			<input type="text" name="email" value={email} onChange={onChange} />
+			<button type="button" onClick={createAction}>Account Regist</button>
 		</div>
 	);
 }
@@ -33,27 +36,32 @@ const initialState = {
 		{
 			id : "1",
 			username : "timeenix",
-			email : "timeenix@hotmail.com"
+			email : "timeenix@hotmail.com",
+			active : true,
 		},
 		{
 			id : "2",
 			username : "lesh",
-			email : "lesh@gmail.com"
+			email : "lesh@gmail.com",
+			active : false,
 		},
 		{
 			id : "3",
 			username : "the J",
-			email : "thejey@naver.com"
+			email : "thejey@naver.com",
+			active : false,
 		},
 		{
 			id : "4",
 			username : "test user",
-			email : "temporary@test.com"
+			email : "temporary@test.com",
+			active : true,
 		},
 	]
 }
 
-function reducer(state, action){
+function a(state, action){
+	console.log(action);	// useReducer의 첫번째 인자는 dispatch()가 보낸 parameter를 두번째 인자로 받음.
 	switch(action.type){
 		case "CHNAGE_ACCOUNT" :
 			return({
@@ -63,21 +71,38 @@ function reducer(state, action){
 					[action.name] : action.value
 				}
 			});
+
 		case "CREATE_ACCOUNT" :
-			return([
-				
-			]);
+			return({
+				formValue : initialState.formValue,
+				accounts : state.accounts.concat(action.account)
+			});
+
+		case "REMOVE_ACCOUNT" :
+			return({
+				...state,
+				accounts : state.accounts.filter( account => account.id !== action.id )
+			});
+
+		case "TOGGLE_ACCOUNT" :
+			return({
+				...state,
+				accounts : state.accounts.map(account =>
+					account.id === action.id ? {account, active : !account.active} : account
+				)
+			});
+
 		default :
 			return state;
-			
 	}
 }
 
 // container
 function CompositionList(){
-	const [state, dispatch] = useReducer(reducer, initialState);
+	const [state, dispatch] = useReducer(a, initialState);
 	const {formValue, accounts} = state;
 	const {user, email} = formValue;
+	const nextId = useRef(accounts.length + 1);
 
 	const onChange = useCallback((event) => {
 		const {name, value} = event.target;
@@ -85,35 +110,50 @@ function CompositionList(){
 			type : "CHNAGE_ACCOUNT",
 			name, 
 			value,
-		}, [name, value])
-	})
+		})
+	}, []);
+
 	const onCreate = useCallback(()=>{
-		const [arr1, arr2, ...rest] = state.accounts
 		dispatch({
 			type : "CREATE_ACCOUNT",
 			account : {
-				id : 1,
-				username,
+				id : nextId.current,
+				username : user,
 				email,
-			},
-			arr1, arr2, rest
-		})
-	},[username, email, arr1, arr2, rest])
+			}
+		});
+		nextId.current += 1; 
+	},[user, email]);
+
 	const onRemove = useCallback( id=>{
 		dispatch({
-			type : 'REMOVE_ACCOUNT'
+			type : 'REMOVE_ACCOUNT',
+			id
 		});
 	}, []);
 
+	const onToggle = useCallback( id=>{
+		dispatch({
+			type : 'TOGGLE_ACCOUNT',
+			id
+		});
+	}, []);
+
+	const count = useMemo(()=>{
+		return(
+			accounts.filter( account=> account.active).length
+		);
+	})
 	const ListElem = accounts.map(
 		account =>
-		<List key={account.id} param={account} removeAction={onRemove}/>
+		<List key={account.id} param={account} removeAction={onRemove} toggleAction={onToggle}/>
 	);
 
 	return(
 		<>
-			<CreateList user={user} email={email} onChange={onChange}/>
+			<CreateList user={user} email={email} onChange={onChange} createAction={onCreate} />
 			{ListElem}
+			{count}
 		</>
 	);
 }
