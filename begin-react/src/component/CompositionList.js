@@ -161,7 +161,7 @@ function CompositionList(){
 
 	const ListElem = accounts.map(
 		account =>
-		<List key={account.id} param={account} removeAction={onRemove} toggleAction={onToggle}/>
+		<List key={account.id.toString()} param={account} removeAction={onRemove} toggleAction={onToggle}/>
 	);
 
 	return(
