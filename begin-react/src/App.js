@@ -3,7 +3,7 @@ import CompositionList from './component/CompositionList';
 import ListBricks from './component/ListBricks';
 
 function Hello({name, color, opt}){
-	console.log(name, color);
+	// console.log(name, color);
 	return (
 	<h1 
 		style = {{color}}
@@ -206,7 +206,7 @@ function ListBlock(){
 		accountInput.current.focus();
 	}
 	const oncreate = ()=>{
-		// creat list
+		// create list
 		const addUserInfo = {
 			id : nextId.current,
 			account_user : user,
@@ -302,11 +302,11 @@ function App() {
 		// </Wrap>
 		<Wrap>
 			{renderList}
-			{/* <MultiInput />
+			<MultiInput />
 			<TextInput />
 			<Counter />
 			<Hello name={"Hello"} color={"tan"} opt />
-			<Hello name={"World"} color={"lightcoral"} opt={false}/> */}
+			<Hello name={"World"} color={"lightcoral"} opt={false}/>
 		</Wrap>
 	);
 }
