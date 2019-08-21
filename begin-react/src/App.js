@@ -1,5 +1,6 @@
 import React, {useState, useRef, useMemo} from 'react';
 import CompositionList from './component/CompositionList';
+import ListBricks from './component/ListBricks';
 
 function Hello({name, color, opt}){
 	console.log(name, color);
@@ -265,28 +266,47 @@ function App() {
 	// const elem = props.map((a)=>{
 	// 	<Hello name={a.name} color={a.color}/> 
 	// })
-	const hookpackage = true;
-		return (
+
+	const useHooks = "useState_like_useReducer";
+	let renderList = null;
+
+	if(useHooks === "useReducer"){
+		renderList = <CompositionList />
+	}else if(useHooks === "useState"){
+		renderList = <ListBlock />
+	}else if(useHooks === "useState_like_useReducer"){
+		renderList = <ListBricks />
+	}
+
+	return (
+		// <Wrap>
+		// 	{	// children parameter
+		// 	// ~ chapter 15
+		// 	hook_useReducer === false ? 
+		// 		<>	{/* braket으로 children parameter를 감싸면 fragment가 필요 */}
+		// 			<ListBlock />
+		// 			<MultiInput />
+		// 			<TextInput />
+		// 			<Counter />
+		// 			{/* {elem} */}
+		// 			<Hello name={"Hello"} color={"tan"} 
+		// 				// opt={trre} 
+		// 				opt // property 선언만 하면 true값을 전달.
+		// 			/> 
+		// 			<Hello name={"World"} color={"lightcoral"} opt={false}/>
+		// 		</>
+		// 	:
+		// 	// chapter 16 ~ 22 : use hooks
+		// 	<CompositionList />
+		// 	}
+		// </Wrap>
 		<Wrap>
-			{	// children parameter
-			// ~ chapter 15
-			hookpackage === false ? 
-				<>	{/* braket으로 children parameter를 감싸면 fragment가 필요 */}
-					<ListBlock />
-					<MultiInput />
-					<TextInput />
-					<Counter />
-					{/* {elem} */}
-					<Hello name={"Hello"} color={"tan"} 
-						// opt={trre} 
-						opt // property 선언만 하면 true값을 전달.
-					/> 
-					<Hello name={"World"} color={"lightcoral"} opt={false}/>
-				</>
-			:
-			// chapter 16 ~ 22 : use hooks
-			<CompositionList />
-			}
+			{renderList}
+			{/* <MultiInput />
+			<TextInput />
+			<Counter />
+			<Hello name={"Hello"} color={"tan"} opt />
+			<Hello name={"World"} color={"lightcoral"} opt={false}/> */}
 		</Wrap>
 	);
 }
