@@ -267,7 +267,7 @@ function App() {
 	// 	<Hello name={a.name} color={a.color}/> 
 	// })
 
-	const useHooks = "useState_like_useReducer";
+	const useHooks = "useReducer";
 	let renderList = null;
 
 	if(useHooks === "useReducer"){
