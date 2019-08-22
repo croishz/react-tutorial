@@ -113,7 +113,7 @@ function CompositionList(){
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const {accounts} = state;
 	// const {user, email} = formValue;
-	const [form, onChange, onReset] = useInputs({
+	const [form, onChange, onReset, onRefresh] = useInputs({
 		user : '',
 		email : '',
 	});
