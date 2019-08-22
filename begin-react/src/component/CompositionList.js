@@ -142,8 +142,8 @@ function CompositionList(){
 			}
 		});
 		nextId.current += 1;
-		onReset();
-		// onRefresh();
+		// onReset();
+		onRefresh();
 	},[user, email, accounts, onReset]);
 
 	const onRemove = useCallback( id => {

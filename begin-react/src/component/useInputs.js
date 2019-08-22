@@ -29,10 +29,16 @@ function reducer(state, action){
 		case "RESET_VALUE" :
 			return (state = action.init);
 		case "EMPTY_VALUE" :
-			for (const key in state) {
-				state[key] = ''
-			}
-			return (state);
+			// for (const key in state) {
+			// 	state[key] = ''
+			// }
+			// return (state);
+			return (
+				Object.keys(state).reduce( (acc, current)=>{
+					acc[current] = "";
+					return acc;
+				}, {})
+			);
 		default :
 			throw new Error("non specification action");
 	}
@@ -59,8 +65,7 @@ function useInputsByReduce(init){
 	const onRefresh = useCallback(()=>{
 		console.log("reducer refresh");
 		dispatch({
-			type : "EMPTY_VALUE",
-			init
+			type : "EMPTY_VALUE"
 		})
 	},[]);
 
