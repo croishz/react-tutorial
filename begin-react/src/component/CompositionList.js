@@ -113,7 +113,7 @@ function CompositionList(){
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const {accounts} = state;
 	// const {user, email} = formValue;
-	const [form, onChange, onReset, onRefresh] = useInputs({
+	const [form, onChange, onReset, onRefresh] = useInputsByReduce({
 		user : '',
 		email : '',
 	});
@@ -143,6 +143,7 @@ function CompositionList(){
 		});
 		nextId.current += 1;
 		onReset();
+		// onRefresh();
 	},[user, email, accounts, onReset]);
 
 	const onRemove = useCallback( id => {
@@ -173,7 +174,12 @@ function CompositionList(){
 
 	return(
 		<>
-			<CreateList user={user} email={email} changeAction={onChange} createAction={onCreate} />
+			<CreateList 
+				user={user} 
+				email={email} 
+				changeAction={onChange} 
+				createAction={onCreate}
+			/>
 			{ListElem}
 			{count}
 		</>

@@ -24,12 +24,15 @@ function reducer(state, action){
 		case "CHNAGE_VALUE" : 
 			return ({
 				...state,
-				[action.name] : [action.value]
+				[action.name] : action.value
 			});
 		case "RESET_VALUE" :
-			return ({
-				...action.init
-			});
+			return (state = action.init);
+		case "EMPTY_VALUE" :
+			for (const key in state) {
+				state[key] = ''
+			}
+			return (state);
 		default :
 			throw new Error("non specification action");
 	}
@@ -53,12 +56,11 @@ function useInputsByReduce(init){
 			init
 		})
 	},[init]);
-	const onRefresh = useCallback((event)=>{
-		const {name, value} = event.target;
+	const onRefresh = useCallback(()=>{
+		console.log("reducer refresh");
 		dispatch({
 			type : "EMPTY_VALUE",
-			name : '',
-			value : ''
+			init
 		})
 	},[]);
 
