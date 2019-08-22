@@ -20,30 +20,22 @@ const uiElemStyle = {
 }
 
 function CreateBrick({username, address, changeEvent, createEvent, nameInput}){
+	const btnStyleClone = JSON.parse(JSON.stringify(btnStyle));
 	return (
 		<div>
 			<input type="text" placeholder="ex. Sarah" name="username" value={username} onChange={changeEvent} ref={nameInput}/>
 			<input type="text" placeholder="ex. nth Avenue at nth St" name="address" value={address} onChange={changeEvent}/>
-			<button type="button" onClick={createEvent} style={Object.assign(btnStyle, uiElemStyle)}>Add</button>
+			<button type="button" onClick={createEvent} style={Object.assign(btnStyleClone, uiElemStyle)}>Add</button>
 		</div>
 	);
 }
 
 function BrickItem({param, removeEvent, toggleEvent}){
 	const {id, username : name, address, leave} = param;
-
 	const activeStyle = {
 		color : leave === true && "steelblue"
 	}
 	const btnStyleClone = JSON.parse(JSON.stringify(btnStyle));
-	const a = Object.assign(activeStyle, uiElemStyle);
-	const b = Object.assign(btnStyleClone, uiElemStyle);
-	console.log(activeStyle);	// 39행에서 변경.
-	console.log(uiElemStyle);
-	console.log(btnStyle);		// CreateBrick에서 변경
-	console.log(btnStyleClone);	// 40행에서 변경.
-
-
 	return(
 		<li data-index={id} style={itemStyle}>
 			<strong onClick={()=>toggleEvent(id)} style={Object.assign(activeStyle, uiElemStyle)}>{name}</strong>
