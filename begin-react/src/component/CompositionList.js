@@ -1,11 +1,11 @@
 import React, {useReducer, useCallback, useMemo, useRef, useContext, createContext} from 'react';
 import {useInputsByReduce} from './useInputs';
 
-const eventAction = createContext("default");
+const contextValue = createContext("default");
 
 // presentation 
 function ListItem({param}){
-	const actionDispatch = useContext(eventAction);
+	const actionDispatch = useContext(contextValue);
 	const {username : user, email, active, id} = param;
 	const style = {
 		color: active && "tan",
@@ -34,7 +34,7 @@ function List({accounts}){
 }
 
 function CreateList({accounts}){
-	const actionDispatch = useContext(eventAction);
+	const actionDispatch = useContext(contextValue);
 	const [{user, email}, onChange, onReset, onRefresh] = useInputsByReduce({
 		user : '',
 		email : '',
@@ -131,10 +131,15 @@ function reducer(state, action){
 			});
 
 		case "REMOVE_ACCOUNT" :
-			return({
-				...state,
-				accounts : state.accounts.filter( account => account.id !== action.id )
-			});
+			if(state.accounts.length > 1 && state.accounts.length !== 0 ){
+				return({
+					...state,
+					accounts : state.accounts.filter( account => account.id !== action.id )
+				});
+			}else{
+				alert("No more Permission to remove");
+				return {...state};
+			}
 
 		case "TOGGLE_ACCOUNT" :
 			return({
@@ -163,11 +168,11 @@ function CompositionList(){
 	}, [accounts]);
 
 	return(
-		<eventAction.Provider value={dispatch}>
+		<contextValue.Provider value={dispatch}>
 			<CreateList accounts={accounts}/>
 			<List accounts={accounts} />
 			{count}
-		</eventAction.Provider>
+		</contextValue.Provider>
 	);
 }
 
