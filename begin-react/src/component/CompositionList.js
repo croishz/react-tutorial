@@ -1,4 +1,5 @@
 import React, {useReducer, useCallback, useMemo, useRef, useContext, createContext} from 'react';
+import produce from 'immer';
 import {useInputsByReduce} from './useInputs';
 
 const contextValue = createContext("default");
@@ -51,7 +52,7 @@ function CreateList({accounts}){
 		});
 		nextId.current += 1;
 		onRefresh();
-	},[actionDispatch,  onRefresh, email, user])
+	},[actionDispatch,  onRefresh, email, user, accounts])
 	return(
 		<div>
 			<input type="text" name="user" value={user} onChange={onChange} />
@@ -61,9 +62,12 @@ function CreateList({accounts}){
 	);
 } 
 /* 
-	chapter 22의 예제 https://codesandbox.io/s/begin-react-b7c16?fontsize=14
+	chapter1-22의 예제 https://codesandbox.io/s/begin-react-b7c16?fontsize=14
 	보편성을 위해 nextId를 state.accounts의 length로부터 받아오는 것이 문제.
 	state도 같이 context value로 받아야 한다.
+	context를 multi로 받는 방법이 필요하다.
+		try to ....
+		const var = createContext([state,dispatch]); <= failed.
 */
 
 // state
@@ -115,12 +119,19 @@ function reducer(state, action){
 		case "CREATE_ACCOUNT" :
 			// let [arr1, arr2, ...rest] = action.newAccounts;	새 배열을 참조, 전달받아 사용하나 기존 값을 사용하나 동일. state parameter 자체가 변경값이라서 어느 쪽이든 결과값은 같다.
 			// let [arr1, arr2, ...rest] = initialState.accounts; state로 관리되기 이전의 초기값으로 다루므로 length 변화없이 push되는 action.account만 계속 바뀐다. 	
-			// let [arr1, arr2, ...rest] = state.accounts;
-			console.log(action.account);
-			return({
-				formValue : initialState.formValue,
-				accounts : state.accounts.concat(action.account)	// composite
+			let [arr1, arr2, ...rest] = state.accounts;
+			// console.log(action.account);
+			return(
+				produce(state, (draft)=>{
+					draft.accounts = [
+						arr1, arr2, action.account, ...rest
+					]
+				})
+			);
+			// return({
 				// ...state,
+				// formValue : initialState.formValue,
+				// accounts : state.accounts.concat(action.account)	// composite
 				// accounts : [										// first, last insert
 				// 	action.account,
 				// 	...state.accounts,
@@ -128,28 +139,40 @@ function reducer(state, action){
 				// accounts : [										// any position
 				// 	arr1, arr2, action.account, ...rest
 				// ]
-			});
+			// });
 
 		case "REMOVE_ACCOUNT" :
 			if(state.accounts.length > 1 && state.accounts.length !== 0 ){
-				return({
-					...state,
-					accounts : state.accounts.filter( account => account.id !== action.id )
-				});
+				return(
+					produce(state, (draft)=>{
+						const tgidx = draft.accounts.findIndex(account => account.id === action.id);
+						draft.accounts.splice(tgidx, 1);
+					})
+				);
+				// return({
+				// 	...state,
+				// 	accounts : state.accounts.filter( account => account.id !== action.id )
+				// });
 			}else{
 				alert("No more Permission to remove");
 				return {...state};
 			}
 
 		case "TOGGLE_ACCOUNT" :
-			return({
-				...state,
-				accounts : state.accounts.map(account =>
-					account.id === action.id 
-					? {...account, active : !account.active} 
-					: account
-				)
-			});
+			return(
+				produce(state, (draft)=>{
+					const tgAccount = draft.accounts.find(account => account.id === action.id);
+					tgAccount.active = !tgAccount.acitve;
+				})
+			);
+			// return({
+			// 	...state,
+			// 	accounts : state.accounts.map(account =>
+			// 		account.id === action.id 
+			// 		? {...account, active : !account.active} 
+			// 		: account
+			// 	)
+			// });
 
 		default :
 			throw new Error("non specification action");

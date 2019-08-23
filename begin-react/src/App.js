@@ -282,7 +282,7 @@ function App() {
 	return (
 		// <Wrap>
 		// 	{	// children parameter
-		// 	// ~ chapter 15
+		// 	// ~ chapter1-15
 		// 	hook_useReducer === false ? 
 		// 		<>	{/* braket으로 children parameter를 감싸면 fragment가 필요 */}
 		// 			<ListBlock />
@@ -297,7 +297,7 @@ function App() {
 		// 			<Hello name={"World"} color={"lightcoral"} opt={false}/>
 		// 		</>
 		// 	:
-		// 	// chapter 16 ~ 22 : use hooks
+		// 	// chapter1-16 ~ 22 : use hooks
 		// 	<CompositionList />
 		// 	}
 		// </Wrap>
