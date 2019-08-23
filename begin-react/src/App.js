@@ -1,6 +1,7 @@
 import React, {useState, useRef, useMemo} from 'react';
 import CompositionList from './component/CompositionList';
 import ListBricks from './component/ListBricks';
+import Family from './component/contextTest';
 
 function Hello({name, color, opt}){
 	// console.log(name, color);
@@ -307,6 +308,7 @@ function App() {
 			<Counter />
 			<Hello name={"Hello"} color={"tan"} opt />
 			<Hello name={"World"} color={"lightcoral"} opt={false}/>
+			<Family />
 		</Wrap>
 	);
 }
