@@ -1,17 +1,36 @@
-import React, {useReducer, useCallback, useMemo, useRef} from 'react';
-import {useInputs, useInputsByReduce} from './useInputs';
+import React, {useReducer, useCallback, useMemo, useRef, useContext, createContext} from 'react';
+import {useInputsByReduce} from './useInputs';
+
+const eventAction = createContext("default");
 
 // presentation 
-function List({param ,  removeAction, toggleAction}){
+function ListItem({param}){
+	const actionDispatch = useContext(eventAction);
 	const {username : user, email, active, id} = param;
 	const style = {
 		color: active && "tan",
 	}
 	return(
 		<div className="item">
-			<strong style={style} onClick={()=>toggleAction(id, active)}>{user}</strong> : <span>{email}</span> <button type="button" onClick={()=>removeAction(id)}>Remove</button>
+			<strong style={style} onClick={()=>actionDispatch({
+				type : "TOGGLE_ACCOUNT",
+				id, active
+			})}>{user}</strong> : <span>{email}</span>
+			<button type="button" onClick={()=>actionDispatch({
+				type : "REMOVE_ACCOUNT",
+				id
+			})}>Remove</button>
 		</div>
 	);
+}
+
+function List({accounts}){
+	return(
+		accounts.map(
+			account =>
+			<ListItem key={account.id.toString()} param={account}/>
+		)
+	)
 }
 
 function CreateList({user, email, changeAction, createAction}){
@@ -146,43 +165,22 @@ function CompositionList(){
 		onRefresh();
 	},[user, email, accounts, onReset]);
 
-	const onRemove = useCallback( id => {
-		dispatch({
-			type : 'REMOVE_ACCOUNT',
-			id
-		});
-	}, []);
-
-	const onToggle = useCallback( (id, active) => {
-		console.log(active);
-		dispatch({
-			type : 'TOGGLE_ACCOUNT',
-			id
-		});
-	}, []);
-
 	const count = useMemo(()=>{
 		return(
 			accounts.filter( account=> account.active).length
 		);
 	}, [accounts]);
-
-	const ListElem = accounts.map(
-		account =>
-		<List key={account.id.toString()} param={account} removeAction={onRemove} toggleAction={onToggle}/>
-	);
-
 	return(
-		<>
+		<eventAction.Provider value={dispatch}>
 			<CreateList 
 				user={user} 
 				email={email} 
 				changeAction={onChange} 
 				createAction={onCreate}
 			/>
-			{ListElem}
+			<List accounts={accounts} />
 			{count}
-		</>
+		</eventAction.Provider>
 	);
 }
 
