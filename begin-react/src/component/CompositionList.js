@@ -55,7 +55,7 @@ function List({ accounts }) {
 
 function CreateList({ accounts }) {
     const actionDispatch = useContext(contextValue);
-    const [{ user, email }, onChange, onReset, onRefresh] = useInputsByReduce({
+    const [{ user, email }, onChange, onRefresh] = useInputsByReduce({
         user: "",
         email: "",
     });
@@ -71,7 +71,7 @@ function CreateList({ accounts }) {
         });
         nextId.current += 1;
         onRefresh();
-    }, [actionDispatch, onRefresh, email, user, accounts]);
+    }, [actionDispatch, email, onRefresh, user]);
     return (
         <div>
             <input type="text" name="user" value={user} onChange={onChange} />

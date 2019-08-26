@@ -68,7 +68,7 @@ function useInputsByReduce(init) {
         });
     }, []);
 
-    return [form, onChange, onReset, onRefresh];
+    return [form, onChange, onRefresh, onReset];
 }
 
 export { useInputs, useInputsByReduce };
