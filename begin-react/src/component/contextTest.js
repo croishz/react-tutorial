@@ -1,4 +1,4 @@
-import React, {useState, useContext, createContext} from 'react';
+import React, { useState, useContext, createContext } from "react";
 
 const dispatch = createContext("a형 간염");
 /*
@@ -14,30 +14,34 @@ const dispatch = createContext("a형 간염");
 	scope, react arrgument 사용 규칙을 깨기 위한 방법론.
 	아마 차후에 이 hook은 고도화가 될 것 같다.
 */
-function Son(){
-	const bodycopy = useContext(dispatch);
-	return <div>우리 가족의 유전병은, {bodycopy}</div>
+function Son() {
+    const bodycopy = useContext(dispatch);
+    return <div>우리 가족의 유전병은, {bodycopy}</div>;
 }
-function Mom(){
-	return <Son />
+function Mom() {
+    return <Son />;
 }
-function Grandfather(){
-	return <Mom />
+function Grandfather() {
+    return <Mom />;
 }
-function GrandMother({inherit}){
-	const Aunt = <div>Aunt {inherit === false ? "is exception" : "is identical"}</div>
-	return Aunt;
+function GrandMother({ inherit }) {
+    const Aunt = (
+        <div>Aunt {inherit === false ? "is exception" : "is identical"}</div>
+    );
+    return Aunt;
 }
-function Family(){
-	const [check, setCheck] = useState(true)
-	// console.log(check);
-	return(
-		<dispatch.Provider value={check ? "주걱턱" : "아무것도 없다."}>
-			<Grandfather />
-			<GrandMother inherit={!check}/>
-			<button type="button" onClick={()=>setCheck(!check)}>Checker</button>
-		</dispatch.Provider>
-	)
+function Family() {
+    const [check, setCheck] = useState(true);
+    // console.log(check);
+    return (
+        <dispatch.Provider value={check ? "주걱턱" : "아무것도 없다."}>
+            <Grandfather />
+            <GrandMother inherit={!check} />
+            <button type="button" onClick={() => setCheck(!check)}>
+                Checker
+            </button>
+        </dispatch.Provider>
+    );
 }
 
 export default Family;
