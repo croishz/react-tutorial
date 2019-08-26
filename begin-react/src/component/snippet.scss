@@ -1,0 +1,41 @@
+// bleet
+&:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.selector {
+    &:before {
+        content: "";
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+
+.class &:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+}
+
+// display blocked
+.selector {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+// abbrivation
+.selector {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+// background object declaration
+background : {
+    image: url();
+    repeat: no-reapet;
+    position: ;
+    size: ;
+}
