@@ -1,23 +1,126 @@
-import React from "react";
+import React, {useReducer, createContext, useCallback, useRef} from "react";
+import CreateTodoList from "./component/CreateTodoList";
+import List from "./component/List";
+import DateWindow from "./component/DateWindow";
 
-function App() {
-    /*
-		state
-		날짜 { date }
-		할 일 항목 { id, description, check_active, }
-		새 항목 생성 { id, description : input value, check_active}
-		남아있는 항목의 갯수 {check_active.length}
-
-		component tree
-		render
-			ㄴ state 관리자
-				ㄴ 날짜 정보창
-				ㄴ 할 일 항목 
-					ㄴ 개개 항목 :: check-toggle list action / remove list action
-				ㄴ 남아있는 항목의 갯수
-				ㄴ 새 항목 생성 :: change value action / create list action
-	*/
-    return <div>To do list</div>;
+const initialState = {
+	input: {
+		todoText: "",
+	},
+	todo: [
+		{
+			id: 1,
+			todoText: "아침 산책",
+			check: false,
+		},
+		{
+			id: 2,
+			todoText: "개고양이 먹이 주기",
+			check: false,
+		},
+		{
+			id: 3,
+			todoText: "아침 먹기",
+			check: false,
+		},
+		{
+			id: 4,
+			todoText: "집문 닫기",
+			check: false,
+		},
+	],
+};
+function reducer(state, action) {
+	switch (action.type) {
+		case "CREATE_TODO":
+			console.log(action.addTodo);
+			return {
+				...state,
+				todo: state.todo.concat(action.addTodo),
+			};
+		case "REMOVE_TODO":
+			if (state.todo.length === 0) {
+				return {
+					...state,
+					todo: [{id: 1, todoText: "", check: false}],
+				};
+			} else {
+				return {
+					...state,
+					todo: state.todo.filter(
+						todoinfo => todoinfo.id !== action.id,
+					),
+				};
+			}
+		case "DONE_TODO":
+			console.log(action.id);
+			return {
+				...state,
+				todo: state.todo.map(todoinfo =>
+					todoinfo.id === action.id
+						? {...todoinfo, check: !todoinfo.check}
+						: todoinfo,
+				),
+			};
+		case "CHANGE_VALUE":
+			console.log(action.value);
+			return {
+				...state,
+				input: {
+					todoText: action.value,
+				},
+			};
+		case "MATCHCASE_TODO":
+			console.log(action.input.todoText);
+			return {
+				state,
+			};
+		default:
+			throw new Error("non specification action");
+	}
 }
+function App() {
+	const [{input, todo}, dispatch] = useReducer(reducer, initialState);
 
+	const onChange = useCallback(event => {
+		const {value} = event.target;
+		dispatch({
+			type: "CHANGE_VALUE",
+			value,
+		});
+	}, []);
+
+	const onMatch = useCallback(() => {
+		dispatch({
+			type: "MATCHCASE_TODO",
+			input,
+		});
+	}, [input]);
+
+	const nextId = useRef(todo.length + 1);
+	const onCreate = useCallback(() => {
+		const addTodo = {
+			id: nextId.current,
+			todoText: input.todoText,
+			check: false,
+		};
+		dispatch({
+			type: "CREATE_TODO",
+			addTodo,
+		});
+		nextId.current += 1;
+	}, [input.todoText]);
+	return (
+		<useDispatch.Provider value={dispatch}>
+			<DateWindow />
+			<List todo={todo} />
+			<CreateTodoList
+				input={input}
+				changeAction={onChange}
+				createAction={onCreate}
+			/>
+		</useDispatch.Provider>
+	);
+}
+export const useDispatch = createContext("default");
 export default App;
