@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useReducer, createContext, useContext} from "react";
 // css
 import styles, {css, keyframes, createGlobalStyle} from "styled-components";
 // icon 
@@ -46,6 +46,64 @@ const ListWrap = styles.ul`
 	}
 `;
 
+// view component
+function List({contents}){
+	let screenWidth = window.innerWidth;
+	let resizeContainer = Math.ceil(screenWidth/2) * 1 + "px";
+	const [containerWidth, setContainerWidth] = useState(resizeContainer);
+	const fitWidth = () => {
+		window.addEventListener("resize", ()=>{
+			screenWidth = window.innerWidth;
+			setContainerWidth(
+				( Math.ceil(screenWidth/2) * 1 + "px" )
+			);
+			console.log(resizeContainer);
+		}, false);
+	}
+	const ListContainer = styles(ListWrap)`
+		width:${containerWidth};
+	`
+	return(
+		<ListContainer onLoad={fitWidth}>	{/*onload 안됨, onresize 객체가 없다. state에서 푸시하는 값으로 css를 계속 갱신할만한 방법이 없을까.... */}
+			{contents.map(content=> <ListItem key={content.id} param={content} elem="li"/>)}
+		</ListContainer>
+	);
+}
+function ListItem({param, elem}){
+	const dispatch = useContext(useCheckToggle);
+	const {id, text, check} = param;
+	const TagName = elem;
+	return(
+		<TagName>
+			<input type="checkbox" id={"checkbox" + id} checked={check} onChange={() => dispatch({
+				type : "CHECKED_TOGGLE",
+				id
+			})}/>
+			<FontAwesomeIcon icon={check ? ["fas", "check-square"] : ["far", "square"]}/>
+			<label htmlFor={"checkbox" + id}>{text}</label>
+		</TagName>
+	);
+}
+
+// context component
+const useCheckToggle = createContext("defaultProps");
+
+function reducer(state, action){
+	switch(action.type){
+		case "CHECKED_TOGGLE" :
+			// console.log("toggle");
+			return({
+				...state,
+				information : state.information.map( (info) => info.id === action.id ? 
+					{ ...info, check : !info.check} :
+					info
+				)
+			}); 
+		default :
+			throw new Error('unhandled action');
+	}
+}
+
 // state 
 const initialState = {
 	information : [
@@ -71,49 +129,16 @@ const initialState = {
 		}
 	]
 }
-function List(){
-	let screenWidth = window.innerWidth;
-	let resizeContainer = Math.ceil(screenWidth/2) * 1 + "px";
-	const [containerWidth, setContainerWidth] = useState(resizeContainer);
-	const fitWidth = () => {
-		window.addEventListener("resize", ()=>{
-			screenWidth = window.innerWidth;
-			setContainerWidth(
-				( Math.ceil(screenWidth/2) * 1 + "px" )
-			);
-			console.log(resizeContainer);
-		}, false);
-	}
-	const ListContainer = styles(ListWrap)`
-		width:${containerWidth};
-	`
-	return(
-		<ListContainer onResize={fitWidth}>	{/* onresize 객체가 없다. state에서 푸시하는 값으로 css를 계속 갱신할만한 방법이 없을까.... */}
-			{initialState.information.map(info=> <ListItem key={info.id} param={info} elem="li"/>)}
-		</ListContainer>
-	);
-}
-function ListItem({param, elem}){
-	const {id, text, check} = param;
-	const TagName = elem;
-	return(
-		<TagName>
-			<input type="checkbox" id={"checkbox" + id}/>
-			<FontAwesomeIcon icon={check ? ["fas", "check-square"] : ["far", "square"]}/>
-			<label htmlFor={"checkbox" + id}>{text}</label>
-		</TagName>
-	);
-}
 
+// state component
 function StyledComponents() {
-	console.dir(styles);
-	console.dir(css);
-	console.dir(keyframes);
+	const [state, dispatch] = useReducer(reducer, initialState);
+	const {information} = state;
 	return(
-		<>
+		<useCheckToggle.Provider value={dispatch}>
 			<GlobalStyle />
-			<List/>
-		</>
+			<List contents={information}/>
+		</useCheckToggle.Provider>
 	);
 }
 
