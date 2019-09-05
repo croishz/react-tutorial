@@ -29,7 +29,7 @@ function UseReduceByUseState() {
 	const {count} = state;
 	const increase = ()=>{
 		setFunc(()=>{
-			return state.count += 1;	// return의 대상이 state 자체이므로 경로를 타고 정보에 접근해서 변경해야 한다.
+			return state.count += 1;	// return의 대상이 state 자체이므로 경로를 타고 정보에 접근해서 변경해야 한다. count += 1로 반환하면 block scope로 인해 업데이트가 불가능. react가 보장해주는 state 객체가 아닌 상태다. 
 		})
 		console.log("active increase : ", state.count)	// 현재의 업데이트된 state 값이 아닌 직전 값이 찍힐 거라는 예상인데, 초회 호출에선 1, 그 다음부터 1,2,3,4,5....로 찍힌다.
 	}
