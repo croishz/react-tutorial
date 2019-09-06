@@ -1,4 +1,4 @@
-import React, {useReducer, useEffect} from "react";
+import React, {useReducer, useEffect, useRef} from "react";
 import axios from "axios";
 
 // 관리해야 할 상태값 : api 서버에 요청한 데이터, 요청 중인지 전인지 여부, 에러 여부.
@@ -7,7 +7,8 @@ function reducer(state, action){
 		case "RELOADING" : 
 			return {
 				...state,
-				loading : true
+				loading : true,
+				data : null
 			}
 		case "LOADING" :
 			return {
@@ -42,9 +43,9 @@ function Users(){
 	const {data : users, loading, error} = info
 	const fetchUsers = async ()=>{
 		console.log(Date.now());
-		if (loading === false){dispatch({
-			type : "RELOADING"
-		})};
+		// if (loading === false){dispatch({
+		// 	type : "RELOADING"
+		// })};
 		try {
 			const response = await axios.get("https://jsonplaceholder.typicode.com/users");
 			dispatch({
@@ -58,19 +59,21 @@ function Users(){
 				event
 			})
 		}
-		dispatch({
-			type : "LOADING"
-		});
+		// dispatch({
+		// 	type : "LOADING"
+		// });
 	}
-	useEffect(()=>{
+	const firstLoad = useRef(true);
+	useEffect((opt = firstLoad)=>{
+		if(opt){return null};
 		fetchUsers();
 	}, []);
 
 	// Load or Reload
-	if (loading) {return console.log(users, loading),<div>로딩 중입니다.</div>}
+	// if (loading) {return console.log(users, loading),<div>로딩 중입니다.</div>}
 
 	// Final massege
-	if (error !== null) {return console.log(users, error), <div>"Error code : " + {error.response.status}</div> }
+	// if (error !== null) {return console.log(users, error), <div>"Error code : " + {error.response.status}</div> }
 
 	// success 
 	return (
@@ -78,7 +81,7 @@ function Users(){
 		console.log(users),
 		<>
 		{!users ? 
-			<div>데이터가 존재하지 않습니다.</div> :	// 이리로 갈 방법이 현재 로직 혹은 호출하는 서버의 db 상황 상 없다. 
+			<div>데이터가 존재하지 않습니다.</div> :
 			<ul>{users.map(user => <li key={user.id.toString()}>{user.name}, {user.address.suite}</li>)}</ul>
 		}
 		<button type="button" onClick={fetchUsers}>Reload</button>
