@@ -1,44 +1,89 @@
-import React, {useState, useEffect} from "react";
+import React, {useReducer, useEffect} from "react";
 import axios from "axios";
 
 // 관리해야 할 상태값 : api 서버에 요청한 데이터, 요청 중인지 전인지 여부, 에러 여부.
+function reducer(state, action){
+	switch(action.type){
+		case "RELOADING" : 
+			return {
+				...state,
+				loading : true
+			}
+		case "LOADING" :
+			return {
+				...state,
+				loading : false
+			};
+		case "RENDER" :
+			return {
+				loading : false, 
+				data : action.response.data,
+				error : null
+			};
+		case "ERROR" :
+			console.log("error action");
+			return {
+				...state,
+				error : action.event
+			};
+		default : 
+			throw new Error('unhandled action : ',  action);
+	}
+}
 function Users(){
-	const [users, setUsers] = useState(null);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
+	// const [users, setUsers] = useState(null);
+	// const [loading, setLoading] = useState(false);
+	// const [error, setError] = useState(null);
+	const [info, dispatch] = useReducer(reducer, {
+		loading : true,
+		data : null,
+		error : null
+	});
+	const {data : users, loading, error} = info
 	const fetchUsers = async ()=>{
-		// setLoading(true);
-		console.log(Date.now())
+		console.log(Date.now());
+		if (loading === false){dispatch({
+			type : "RELOADING"
+		})};
 		try {
-			// console.log(users);
-			// setError(null);
-			const response = await axios.get("/users.json");
-			setUsers(response.data);
-			// console.log(response);
+			const response = await axios.get("/user.json");
+			dispatch({
+				type : "RENDER",
+				response
+			})
 		} catch(event) {
-			setError(event);
+			console.dir(event);
+			dispatch({
+				type : "ERROR",
+				event
+			})
 		}
-		
-		// setLoading(false);
+		dispatch({
+			type : "LOADING"
+		});
 	}
 	useEffect(()=>{
-		// setLoading(true);
 		fetchUsers();
-		// setLoading(false);
 	}, []);
-	// if (loading) {return console.log(users),<div>로딩 중입니다.</div>}
-	if (error) {return console.log(users),console.log(error), <div>"Error code : " + {error.response.status}</div> }
-	else if (!users) {return console.log(users),<div>로딩에 실패하였습니다.</div>}
-	else {return (
-		console.log(users),
+
+	// Load or Reload
+	if (loading) {return console.log(users, loading),<div>로딩 중입니다.</div>}
+
+	// Final massege
+	if (error !== null) {return console.log(users, error), <div>"Error code : " + {error.response.status}</div> }
+
+	// success 
+	return (
 		console.log(Date.now()),
+		console.log(users),
 		<>
-		<ul>
-			{users.map(user => <li key={user.id.toString()}>{user.name}, {user.address.suite}</li>)}
-		</ul>
+		{!users ? 
+			<div>로딩에 실패하였습니다.</div> :	// 이리로 갈 방법이 현재 로직에선 없다.
+			<ul>{users.map(user => <li key={user.id.toString()}>{user.name}, {user.address.suite}</li>)}</ul>
+		}
 		<button type="button" onClick={fetchUsers}>Reload</button>
 		</>
-	)}
+	)
 }
 function App() {
 	return(
