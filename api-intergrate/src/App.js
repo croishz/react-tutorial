@@ -14,7 +14,7 @@ function reducer(state, action){
 				...state,
 				loading : false
 			};
-		case "RENDER" :
+		case "SUCCESS" :
 			return {
 				loading : false, 
 				data : action.response.data,
@@ -46,9 +46,9 @@ function Users(){
 			type : "RELOADING"
 		})};
 		try {
-			const response = await axios.get("/user.json");
+			const response = await axios.get("https://jsonplaceholder.typicode.com/users");
 			dispatch({
-				type : "RENDER",
+				type : "SUCCESS",
 				response
 			})
 		} catch(event) {
@@ -78,7 +78,7 @@ function Users(){
 		console.log(users),
 		<>
 		{!users ? 
-			<div>로딩에 실패하였습니다.</div> :	// 이리로 갈 방법이 현재 로직에선 없다.
+			<div>데이터가 존재하지 않습니다.</div> :	// 이리로 갈 방법이 현재 로직 혹은 호출하는 서버의 db 상황 상 없다. 
 			<ul>{users.map(user => <li key={user.id.toString()}>{user.name}, {user.address.suite}</li>)}</ul>
 		}
 		<button type="button" onClick={fetchUsers}>Reload</button>
