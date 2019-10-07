@@ -1,4 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
+tutorial-route/src/logo.svg
+tutorial-route/src/App.test.js
+tutorial-route/src/index.css
+tutorial-route/src/App.css
+tutorial-route/public/logo512.png
+tutorial-route/public/logo192.png
