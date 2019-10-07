@@ -1,55 +1,32 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 // import logo from './logo.svg';
-import './App.css';
-import PhoneForm from './component/PhoneForm';
-import PhoneList from './component/PhoneList';
+// import './App.css';
 
-class App extends Component {
-	id = 2
-	state = {
-		information : [
-			{
-				id : 0,
-				name : "daigo",
-				standing : "12"
-			},
-			{
-				id : 1,
-				name : "umehara",
-				standing : "10"
-			}
-		]
-	}
-
-	handleCreate = (data) => {
-		console.log(data);
-		const {information} = this.state;
-		this.setState({
-			information : information.concat({
-				id : this.id++,
-				...data
-			})
-		})
-	}
-	handleRemove  = (id) => {
-		const { information } = this.state;
-		this.setState({
-			information : information.filter( info => info.id !== id )
-		})
-	}
-	render() {
-		return (
-			<Fragment>
-				<PhoneForm 
-					onCreate={this.handleCreate} 
-				/>
-				{/* {JSON.stringify(information)} */}
-				<PhoneList
-					data={this.state.information}
-				/>
-			</Fragment>
-		);
-	}
+function App(){
+	return(
+		<>
+			<pre>
+				<code>
+					<div>design for "todo list" </div>
+					<div>component tree</div>
+					<div>TodoFrame - all props</div>
+					<div>	context - all state but not needless </div>
+					<div>	TodoTemplete - id : Date.now / day : Date.tolocaleString / </div>
+					<div>		TodoHeader</div>
+					<div>			DateTime</div>
+					<div>			CountLeast</div>
+					<div>		TodoList</div>
+					<div>			TodoItem - id : useMemo(number) / checked : boolean / content : string</div>
+					<div>				[act] check update</div>
+					<div>				[act] delete</div>
+					<div>				[act] content modify</div>
+					<div>		TodoFooter </div>
+					<div>			TodoCreate - id : useMemo(number++) / checked : false / content : input.value</div>
+					<div>				[act] create</div>
+				</code>
+			</pre>
+		</>
+	);
 }
 
 export default App;
