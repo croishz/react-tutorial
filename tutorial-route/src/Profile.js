@@ -1,81 +1,61 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
-import {Link, Route} from "react-router-dom";
 
-const profileData = {
+const ProfileIndivisualWrap = styled.div`
+    border:1px solid tan;
+    padding:20px 14px;
+    margin-top:20px;
+`
+const ProfileIndivisualName = styled.span`
+    color: lightcoral;
+`
+const MainCharactor = styled.span`
+    font-size:18px;
+    color:#333;
+`
+const gamerData = {
     daigo : {
         name : "Umehara Daigo",
-        desc : "sfv gamer"
-    }, 
-    NL : {
-        name : "Jeong",
-        desc : "sfv gamer"
+        charactor : "Gulie, Zeku, Ryu"
+    },
+    ethnim : {
+        name : "Ethnim",
+        charactor : "Chunli"
     }
-}
-
-const ProfileWrap = styled.div`
-    border:1px solid tan;
-    margin-top:16px;
-    padding:14px 20px;
-`
-const ProfileName = styled.span`
-    color:lightcoral;
-`
-function ProfileIndivisual({param, username}){
-    const {name, desc} = param;
-    return(
-        <ProfileWrap>
-            <span>{username === "all" ? "" : username + " : " } <ProfileName>{name}</ProfileName></span>  
-            <div>{desc}</div>
-        </ProfileWrap>
-    );
 } 
 
 function Profile({match}){
-    console.log(match.params);
     const {username} = match.params;
-    const profile = profileData[username];
-    console.log(profile);
-
-    if(!profile){
-        if(username === "all"){
-            // console.log("all profile output");
-            return(
-                <>
-                    <span>{"All Profiles"}</span>
-                    {Object.keys(profileData).map( (value) => {
-                        // console.dir(value);
-                        return(
-                            <ProfileIndivisual key={value} param={profileData[value]} username={username}/>
-                        )
-                    })}
-                </>
-            );
-        }
-        // console.log("no match profile");
-        return <span>No exist.</span>
+    const profile = gamerData[username];
+    if(username === "all"){
+        return(
+            Object.keys(gamerData).map((keyValue)=>
+                <ProfileIndivisual key={keyValue} username={username} param={gamerData[keyValue]}/>
+            )
+        );
     }
-
     return(
-        <ProfileIndivisual param={profile} username={username}/>
+        <ProfileIndivisual username={username} param={profile}/>
     );
-} 
-function Profiles(){
-    return(
-        <>
-        <ul className="Lnb">
-            <li>
-                <Link to="/profile/daigo">Daigo</Link>
-            </li>
-            <li>
-                <Link to="/profile/NL">NL</Link>
-            </li>
-        </ul>
-        {/* <Route path="/profile" render={()=><span>Choose Gamer</span>} exact/> */}
-        <Route path="/profile/:username" component={Profile} exact/>
-        </>
-    );
-
 }
 
-export {Profiles, Profile};
+function ProfileIndivisual({param, username}){
+    const {name, charactor} = param;
+    const [main, ...rest] = charactor.split(",");
+    const subCharactors = rest.join(", ");
+    console.log(main);
+    return(
+        <ProfileIndivisualWrap>
+            <div>
+                <ProfileIndivisualName children={name}/>
+                {username === "all" ? "" : (" As " + username)}
+            </div>
+            <div>
+                <MainCharactor children={main}/>
+                {rest.length !== 0 && ", "}
+                {subCharactors}
+            </div>
+        </ProfileIndivisualWrap>
+    );
+}
+export default Profile;

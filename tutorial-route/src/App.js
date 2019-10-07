@@ -1,27 +1,26 @@
 import React from "react";
-import {Route, Link} from "react-router-dom";
+import {Link, Route} from "react-router-dom";
 import Home from "./Home";
-import {Profiles} from "./Profile";
+import Profiles from "./Profiles";
 
-function Navigation(){
-	return(
-		<ul className="Gnb">
-			<li><Link to="/">홈</Link></li>
-			<li><Link to="/profile">프로필</Link></li>
-		</ul>
-	);
-}
 function App(){
 	return(
-	<>
-		<Navigation />
-		<hr />
-		<Route path="/" component={Home} exact /> {/*exact : path exactly matched */}
-		{/* <Route path="/Profile/:username" component={{Profiles, Profile}} exact />	 */}
-		{/* url/[:key], Possible attach parameter by key */}
-		<Route path="/profile" component={Profiles} exact />
-	</>
+		<>
+		<span>Route sample</span>
+		<ul>
+			<li>
+				<Link to="/">Home</Link>
+			</li>
+			<li>
+				<Link to="/profiles">Profiles</Link>
+			</li>
+		</ul>
+		<hr/>
+		<Route path="/" component={Home} exact/>
+		<Route path="/profiles" component={Profiles}/>
+		</>
 	);
 } 
+
 
 export default App;

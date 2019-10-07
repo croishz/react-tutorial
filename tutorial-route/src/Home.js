@@ -1,9 +1,11 @@
 import React from "react";
 import qs  from "qs";
 
-function Home({location, match}){
-    // console.log(match);
-    // console.log(location);
+function Home({location, match, history, staticContext}){
+    console.log(location);
+    console.log(match);
+    console.log(history);
+    console.log(staticContext);
 
     const queryString = qs.parse(location.search, {ignoreQueryPrefix:true});
     const confirm = queryString.confirm === "true";
