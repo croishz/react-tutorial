@@ -1,7 +1,7 @@
 import React from "react";
 import Profile from "./Profile";
 import {Link, Route} from "react-router-dom";
-
+import useReactRouter from "use-react-router";
 function Profiles(){
     return(
         <>
@@ -19,8 +19,14 @@ function Profiles(){
             </li>
         </ul>
         <Route path="/profiles/:username" component={Profile}/>
+        {/* <RouteAPI /> */}
         </>
     );
-} 
-
+}
+function RouteAPI(){
+    console.dir(useReactRouter);
+    const {match} = useReactRouter;
+    console.log(match);
+    return null;
+}
 export default Profiles;
