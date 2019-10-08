@@ -4,3 +4,5 @@ tutorial-route/src/index.css
 tutorial-route/src/App.css
 tutorial-route/public/logo512.png
 tutorial-route/public/logo192.png
+# dependencies
+/node_modules
