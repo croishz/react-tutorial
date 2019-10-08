@@ -1,7 +1,8 @@
 import React from "react";
+import {Route, NavLink} from "react-router-dom";
 import Profile from "./Profile";
-import {Link, Route} from "react-router-dom";
-import useReactRouter from "use-react-router";
+import RouterHooks from "./RouterHooks";
+
 function Profiles(){
     return(
         <>
@@ -9,24 +10,29 @@ function Profiles(){
         <h3>Your Challengers</h3>            
         <ul>
             <li>
-                <Link to="/profiles/daigo">Daigo</Link>
+                <NavLink 
+                    to="/profiles/daigo" exact
+                    activeStyle={{backgroundColor:"tan"}}
+                    activeClassName={"active"}
+                    // isActive={({match})=>{
+                    //     return (match.params.check = "check");
+                    // }}
+                >
+                Daigo
+                </NavLink>
             </li>
             <li>
-                <Link to="/profiles/ethnim">Ethnim</Link>
+                <NavLink to="/profiles/ethnim">Ethnim</NavLink>
             </li>
             <li>
-                <Link to="/profiles/all">All</Link>
+                <NavLink to="/profiles/all">All</NavLink>
             </li>
         </ul>
         <Route path="/profiles/:username" component={Profile}/>
+        <RouterHooks />
         {/* <RouteAPI /> */}
         </>
     );
 }
-function RouteAPI(){
-    console.dir(useReactRouter);
-    const {match} = useReactRouter;
-    console.log(match);
-    return null;
-}
+
 export default Profiles;
