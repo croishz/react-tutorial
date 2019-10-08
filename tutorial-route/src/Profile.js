@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import styled from "styled-components";
+import WithRouterAPI from "./WithRouterAPI";
 
 const ProfileIndivisualWrap = styled.div`
     border:1px solid tan;
@@ -43,8 +44,8 @@ function ProfileIndivisual({param, username}){
     const {name, charactor} = param;
     const [main, ...rest] = charactor.split(",");
     const subCharactors = rest.join(", ");
-    console.log(main);
     return(
+        <>
         <ProfileIndivisualWrap>
             <div>
                 <ProfileIndivisualName children={name}/>
@@ -56,6 +57,10 @@ function ProfileIndivisual({param, username}){
                 {subCharactors}
             </div>
         </ProfileIndivisualWrap>
+        <WithRouterAPI />
+        </>
     );
 }
+
+
 export default Profile;
