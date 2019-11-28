@@ -3,11 +3,11 @@ import {withRouter} from "react-router-dom";
 import styled from "styled-components"
 
 const OutputWrap = styled.div`
-    float:left;
+    display:inline-block;
 `
 const Output = styled.textarea`
     width:300px;
-    height:150px;
+    height:170px;
     vertical-align:top;
 `
 function WithRouterAPI(props){

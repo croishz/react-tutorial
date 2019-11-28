@@ -30,13 +30,19 @@ function Profile({match}){
     const profile = gamerData[username];
     if(username === "all"){
         return(
-            Object.keys(gamerData).map((keyValue)=>
-                <ProfileIndivisual key={keyValue} username={username} param={gamerData[keyValue]}/>
-            )
+            <>
+                {Object.keys(gamerData).map((keyValue)=>
+                    <ProfileIndivisual key={keyValue} username={username} param={gamerData[keyValue]}/>
+                )}
+                <WithRouterAPI />
+            </>
         );
     }
     return(
-        <ProfileIndivisual username={username} param={profile}/>
+        <>
+            <ProfileIndivisual username={username} param={profile}/>
+            <WithRouterAPI />
+        </>
     );
 }
 
@@ -57,7 +63,6 @@ function ProfileIndivisual({param, username}){
                 {subCharactors}
             </div>
         </ProfileIndivisualWrap>
-        <WithRouterAPI />
         </>
     );
 }
