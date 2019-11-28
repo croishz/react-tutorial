@@ -16,7 +16,7 @@ function HistoryAPI(){
     },[history]);
     const goAnywhere = useCallback(()=>{
         history.go(-10);
-    },[]);
+    },[history]);
 
     useEffect(()=>{
         console.log(history);
